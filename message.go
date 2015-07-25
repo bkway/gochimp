@@ -20,6 +20,11 @@ const(
 	Important          = "Important"
 )
 
+const(
+	Host string = "smtp.mandrillapp.com"
+	Port        = "587"
+)
+
 type MergeLang string
 const(
 	Mailchimp MergeLang    = "mailchimp"
