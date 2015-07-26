@@ -123,7 +123,7 @@ func (p *Template) Render(data interface{}, tags []string, meta map[string]strin
 
 	if p.GoogleAnalytics != nil {
 		if p.GoogleAnalytics.Campaign != "" {
-			out.Headers.Set("X-MC-.GoogleAnalyticsCampaign", p.GoogleAnalytics.Campaign)
+			out.Headers.Set("X-MC-GoogleAnalyticsCampaign", p.GoogleAnalytics.Campaign)
 		}
 		if len(p.GoogleAnalytics.Domains) > 0 {
 			out.Headers.Set("X-MC-GoogleAnalytics", strings.Join(p.GoogleAnalytics.Domains, ","))
