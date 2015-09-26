@@ -1,7 +1,7 @@
-package go_mailchimp
+package gochimp
 
 import(
-	"github.com/jordan-wright/email"
+	email "gopkg.in/jordan-wright/email.v1"
 //	"net/smtp"
 	"encoding/json"
 	"strings"
