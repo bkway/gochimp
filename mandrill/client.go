@@ -14,6 +14,17 @@ type Client struct {
 	key string
 }
 
+type ErrorResult struct {
+	Status      SendStatus    `json:"status"`
+	Code        int           `json:"code"`
+	Name        string        `json:"name"`
+	Message     string        `json:"message"`
+}
+
+func (e *ErrorResult) Error() string {
+	return e.Message
+}
+
 func (c *Client) Call(endpoint string, data map[string]interface{}, results interface{}) error {
 	url := fmt.Sprintf(ENDPOINT, endpoint)
 
@@ -45,6 +56,15 @@ func (c *Client) Call(endpoint string, data map[string]interface{}, results inte
 		return err
 	}
 
+	if response.StatusCode >= 400 {
+		e := &ErrorResult{}
+		err := json.Unmarshal(body, e)
+		if err != nil {
+			return fmt.Errorf("Unknown client error: %s", response.Status)
+		}
+		return e
+	}
+
 	return json.Unmarshal(body, results)
 }
 
@@ -52,6 +72,3 @@ func (c *Client) Call(endpoint string, data map[string]interface{}, results inte
 func NewClient(key string) *Client {
 	return &Client{ key }
 }
-
-
-

@@ -112,6 +112,7 @@ const(
 	MessageScheduled            = "scheduled"
 	MessageRejected             = "rejected"
 	MessageInvalid              = "invalid"
+	ClientError                 = "error"
 )
 
 type RejectType string
