@@ -1,4 +1,5 @@
 package mandrill
+
 /*
 import (
   "errors"

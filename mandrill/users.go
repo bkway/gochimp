@@ -1,4 +1,5 @@
 package mandrill
+
 /*
 import(
 	"time"
@@ -48,7 +49,7 @@ func (p *Client) Info() (Info, error) {
 
 func (p *Client) Ping() (bool, error) {
 	var pong string
-	err :=  p.Call("users/ping", nil, &pong)
+	err := p.Call("users/ping", nil, &pong)
 	return pong == "PONG!", err
 }
 

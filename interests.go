@@ -1,11 +1,12 @@
 package gochimp
 
-import(
+import (
 	"fmt"
 )
 
 type CategoryType string
-const(
+
+const (
 	Checkboxes CategoryType = "checkboxes"
 	Dropdown                = "dropdown"
 	Radio                   = "radio"
@@ -21,18 +22,18 @@ type Category struct {
 }
 
 type Interest struct {
-	Id           string       `json:"id"`
-	ListId       string       `json:"list_id"`
-	CategoryId   string       `json:"category_id"`
-	Name         string       `json:"name"`
-	DisplayOrder uint         `json:"display_order"`
+	Id           string `json:"id"`
+	ListId       string `json:"list_id"`
+	CategoryId   string `json:"category_id"`
+	Name         string `json:"name"`
+	DisplayOrder uint   `json:"display_order"`
 }
 
 func (c *Client) InterestCategories(listId string) ([]Category, error) {
 	// GET /lists/{list_id}/interest-categories
 	var results struct {
-			Categories []Category `json:"categories"`
-		}
+		Categories []Category `json:"categories"`
+	}
 	err := c.Call("GET", fmt.Sprintf("/lists/%s/interest-categories", listId), nil, &results)
 	if err == nil {
 		return results.Categories, nil
@@ -68,8 +69,8 @@ func (c *Client) DeleteInterestCategory(listId, categoryId string) error {
 func (c *Client) Interests(listId, categoryId string) ([]Interest, error) {
 	// GET /lists/{list_id}/interest-categories/{category_id}/interests
 	var result struct {
-			Interests []Interest `json:"interests"`
-		}
+		Interests []Interest `json:"interests"`
+	}
 	err := c.Call("GET", fmt.Sprintf("/lists/%s/interest-categories/%s/interests", listId, categoryId), nil, &result)
 	return result.Interests, err
 }
@@ -98,4 +99,3 @@ func (c *Client) DeleteInterest(listId, categoryId, id string) error {
 	var results interface{}
 	return c.Call("DELETE", fmt.Sprintf("/lists/%s/interest-categories/%s/interests/%s", listId, categoryId, id), nil, &results)
 }
-

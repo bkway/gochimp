@@ -1,4 +1,5 @@
 package mandrill
+
 /*
 import(
 	"time"
@@ -31,7 +32,6 @@ func (a *Address) UnMarshalJSON(data []byte) (err error) {
 	return err
 }
 */
-
 
 type Variable struct {
 	Name    string      `json:"name"`

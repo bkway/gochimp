@@ -1,12 +1,11 @@
 package mandrill
 
-import(
-	"time"
+import (
 	"net/mail"
+	"time"
 )
 
-
-const(
+const (
 	DateFormat string = "2006-01-02 15:04:05"
 )
 

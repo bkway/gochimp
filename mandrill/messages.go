@@ -1,11 +1,8 @@
 package mandrill
 
-import(
-
-)
-
 type SendType string
-const(
+
+const (
 	SendTo  SendType = "to"
 	SendCC           = "cc"
 	SendBCC          = "bcc"
@@ -20,14 +17,15 @@ type Recipient struct {
 }
 
 type MergeLanguage string
-const(
+
+const (
 	Mailchimp  MergeLanguage = "mailchimp"
 	Handlebars               = "handlebars"
 )
 
 type RcptMergeVars struct {
-	Rcpt  string       `json:"rcpt"`
-	Vars []Variable    `json:"vars"`
+	Rcpt string     `json:"rcpt"`
+	Vars []Variable `json:"vars"`
 }
 
 type RcptMetadata struct {
@@ -36,59 +34,57 @@ type RcptMetadata struct {
 }
 
 type Attachment struct {
-	Type    string    `json:"type"`
-	Name    string    `json:"name"`
-	Content string    `json:"content"`
+	Type    string `json:"type"`
+	Name    string `json:"name"`
+	Content string `json:"content"`
 }
 
 type Message struct {
-	Html                    string            `json:"html,omitempty"`
-	Text                    string            `json:"text,omitempty"`
+	Html string `json:"html,omitempty"`
+	Text string `json:"text,omitempty"`
 
-	Subject                 string            `json:"subject,omitempty"`
-	FromEmail               string            `json:"from_email,omitempty"`
-	FromName                string            `json:"from_name,omitempty"`
+	Subject   string `json:"subject,omitempty"`
+	FromEmail string `json:"from_email,omitempty"`
+	FromName  string `json:"from_name,omitempty"`
 
-	Headers                 map[string]string `json:"headers,omitempty"`
+	Headers map[string]string `json:"headers,omitempty"`
 
-	Important               bool              `json:"important,omitempty"`
-	TrackOpens              bool              `json:"track_opens,omitempty"`
-	TrackClicks             bool              `json:"track_clicks,omitempty"`
-	AutoText                bool              `json:"auto_text,omitempty"`
-	AutoHtml                bool              `json:"auto_html,omitempty"`
-	InlineCSS               bool              `json:"inline_css,omitempty"`
-	UrlStripQs              bool              `json:"url_strip_qs,omitempty"`
-	PreserveRecipients      bool              `json:"preserve_recipients,omitempty"`
-	ViewContentLink         bool              `json:"view_content_link,omitempty"`
+	Important          bool `json:"important,omitempty"`
+	TrackOpens         bool `json:"track_opens,omitempty"`
+	TrackClicks        bool `json:"track_clicks,omitempty"`
+	AutoText           bool `json:"auto_text,omitempty"`
+	AutoHtml           bool `json:"auto_html,omitempty"`
+	InlineCSS          bool `json:"inline_css,omitempty"`
+	UrlStripQs         bool `json:"url_strip_qs,omitempty"`
+	PreserveRecipients bool `json:"preserve_recipients,omitempty"`
+	ViewContentLink    bool `json:"view_content_link,omitempty"`
 
-	BCCAddress              string            `json:"bcc_address,omitempty"`
-	TrackingDomain          string            `json:"tracking_domain,omitempty"`
-	SigningDomain           string            `json:"signing_domain,omitempty"`
-	ReturnPathDomain        string            `json:"return_path_domain,omitempty"`
-	Merge                   bool              `json:"merge,omitempty"`
-	MergeLanguage           MergeLanguage     `json:"merge_language,omitempty"`
+	BCCAddress       string        `json:"bcc_address,omitempty"`
+	TrackingDomain   string        `json:"tracking_domain,omitempty"`
+	SigningDomain    string        `json:"signing_domain,omitempty"`
+	ReturnPathDomain string        `json:"return_path_domain,omitempty"`
+	Merge            bool          `json:"merge,omitempty"`
+	MergeLanguage    MergeLanguage `json:"merge_language,omitempty"`
 
-	GlobalMergeVars         []Variable        `json:"global_merge_vars,omitempty"`
+	GlobalMergeVars []Variable `json:"global_merge_vars,omitempty"`
 
-	Tags                    []string          `json:"tags,omitempty"`
-	SubAccount              string            `json:"sub_account,omitempty"`
-	GoogleAnalyticsDomains  []string          `json:"google_analytics_domains,omitempty"`
-	GoogleAnalyticsCampaign []string          `json:"google_analytics_campaign,omitempty"`
-	Metadata                []RcptMetadata    `json:"metadata,omitempty"`
+	Tags                    []string       `json:"tags,omitempty"`
+	SubAccount              string         `json:"sub_account,omitempty"`
+	GoogleAnalyticsDomains  []string       `json:"google_analytics_domains,omitempty"`
+	GoogleAnalyticsCampaign []string       `json:"google_analytics_campaign,omitempty"`
+	Metadata                []RcptMetadata `json:"metadata,omitempty"`
 
-	To                      []Recipient       `json:"to,omitempty"`
+	To []Recipient `json:"to,omitempty"`
 	// built from Recipients
-	MergeVars               []RcptMergeVars   `json:"merge_vars,omitempty"`
-	RecipientMetadata       []RcptMetadata    `json:"recipient_metadata,omitempty"`
+	MergeVars         []RcptMergeVars `json:"merge_vars,omitempty"`
+	RecipientMetadata []RcptMetadata  `json:"recipient_metadata,omitempty"`
 
-	Attachments             []Attachment      `json:"attachments,omitempty"`
-	Images                  []Attachment      `json:"images,omitempty"`
+	Attachments []Attachment `json:"attachments,omitempty"`
+	Images      []Attachment `json:"images,omitempty"`
 }
 
 func NewMessage() *Message {
-	msg := Message{
-
-	}
+	msg := Message{}
 	return &msg
 }
 
@@ -97,16 +93,17 @@ func (m *Message) AddRecipient(t SendType, r Recipient) *Message {
 	m.To = append(m.To, r)
 
 	if r.MergeVars != nil {
-		m.MergeVars = append(m.MergeVars, RcptMergeVars{ Rcpt: r.Email, Vars: r.MergeVars })
+		m.MergeVars = append(m.MergeVars, RcptMergeVars{Rcpt: r.Email, Vars: r.MergeVars})
 	}
 	if r.Metadata != nil {
-		m.Metadata = append(m.Metadata, RcptMetadata{ Rcpt: r.Email, Values: r.Metadata })
+		m.Metadata = append(m.Metadata, RcptMetadata{Rcpt: r.Email, Values: r.Metadata})
 	}
 	return m
 }
 
 type SendStatus string
-const(
+
+const (
 	MessageSent      SendStatus = "sent"
 	MessageQueued               = "queued"
 	MessageScheduled            = "scheduled"
@@ -116,32 +113,33 @@ const(
 )
 
 type RejectType string
-const(
-	RejectedHardBounce RejectType  = "hard-bounce"
-	RejectedSoftBounce             = "soft-bounce"
-	RejectedSpam                   = "spam"
-	RejectedUnsub                  = "unsub"
-	RejectedCustom                 = "custom"
-	RejectedInvalidSender          = "invalid-sender"
-	RejectedInvalid                = "invalid"
-	RejectedModeLimit              = "test-mode-limit"
-	RejectedRule                   = "rule"
+
+const (
+	RejectedHardBounce    RejectType = "hard-bounce"
+	RejectedSoftBounce               = "soft-bounce"
+	RejectedSpam                     = "spam"
+	RejectedUnsub                    = "unsub"
+	RejectedCustom                   = "custom"
+	RejectedInvalidSender            = "invalid-sender"
+	RejectedInvalid                  = "invalid"
+	RejectedModeLimit                = "test-mode-limit"
+	RejectedRule                     = "rule"
 )
 
 type SendResult struct {
-	Email        string       `json:"email"`
-	Status       SendStatus   `json:"status"`
-	RejectReason RejectType   `json:"reject_reason"`
-	Id           string       `json:"id"`
+	Email        string     `json:"email"`
+	Status       SendStatus `json:"status"`
+	RejectReason RejectType `json:"reject_reason"`
+	Id           string     `json:"id"`
 }
 
 func prepMessageSend(msg *Message, async bool, opts map[string]string) map[string]interface{} {
-	request := map[string]interface{}{ "message": msg }
+	request := map[string]interface{}{"message": msg}
 	if async {
 		request["async"] = true
 	}
 	if opts != nil {
-		for _, key := range ([]string{ "send_at", "ip_pool", "template_name", "template_content" }) {
+		for _, key := range []string{"send_at", "ip_pool", "template_name", "template_content"} {
 			if opt, ok := opts[key]; ok {
 				request[key] = opt
 			}

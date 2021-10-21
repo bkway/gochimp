@@ -1,15 +1,14 @@
 package gochimp
 
-
-import(
-	"fmt"
+import (
+	"bytes"
 	"crypto/md5"
 	"encoding/json"
-	"net/http"
+	"fmt"
 	"io/ioutil"
-	"bytes"
-	"strings"
 	"log"
+	"net/http"
+	"strings"
 )
 
 const ENDPOINT string = "https://%s.api.mailchimp.com/3.0/%s"
@@ -20,22 +19,22 @@ type Client struct {
 }
 
 type Contact struct {
-	Company string `json:"company"`
+	Company  string `json:"company"`
 	Address1 string `json:"address1"`
 	Address2 string `json:"address2,omitempty"`
-	City string `json:"city"`
-	State string `json:"state"`
-	Zip string `json:"zip"`
-	Country string `json:"country"`
-	Phone string `json:"phone,omitempty"`
+	City     string `json:"city"`
+	State    string `json:"state"`
+	Zip      string `json:"zip"`
+	Country  string `json:"country"`
+	Phone    string `json:"phone,omitempty"`
 }
 
 type Detail struct {
-	AccountId string `json:"account_id"`
-	AccountName string `json:"account_name"`
-	Contact Contact `json:"contact"`
-	LastLogin string `json:"last_login"`
-	TotalSubscribers int64 `json:"total_subscribers"`
+	AccountId        string  `json:"account_id"`
+	AccountName      string  `json:"account_name"`
+	Contact          Contact `json:"contact"`
+	LastLogin        string  `json:"last_login"`
+	TotalSubscribers int64   `json:"total_subscribers"`
 }
 
 func EmailToHash(email string) string {
@@ -44,7 +43,7 @@ func EmailToHash(email string) string {
 
 func NewClient(key string) *Client {
 	dc := strings.SplitN(key, "-", 2)[1]
-	return &Client{ dc, key }
+	return &Client{dc, key}
 }
 
 func (c *Client) Call(method string, endpoint string, data interface{}, results interface{}) error {

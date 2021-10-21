@@ -1,52 +1,53 @@
 package gochimp
 
-import(
+import (
 	"fmt"
 )
 
 type EmailType string
-const(
+
+const (
 	HtmlEmail EmailType = "html"
 	TextEmail           = "text"
 )
 
 type Member struct {
-	Id               string                 `json:"id,omitempty"`
-	EmailAddress     string                 `json:"email_address"`
-	UniqueEmailId    string                 `json:"unique_email_id,omitempty"`
-	EmailType        EmailType              `json:"email_type,omitempty"`
-	Status           SubscriptionStatus     `json:"status,omitempty"`
-	StatusIfNew      SubscriptionStatus     `json:"status_if_new,omitempty"`
-	MergeFields      map[string]interface{} `json:"merge_fields,omitempty"`
-	Interests        map[string]bool        `json:"interests,omitempty"`
-	Stats struct {
-		AvgOpenRate  float32                `json:"avg_open_rate,omitempty"`
-		AvgClickRate float32                `json:"avg_click_rate,omitempty"`
-	}                                       `json:"stats,omitempty"`
-	IpSignup         string                 `json:"ip_signup,omitempty"`
-	TimestampSignup  string                 `json:"timestamp_signup,omitempty"`
-	IpOpt            string                 `json:"ip_opt,omitempty"`
-	TimestampOpt     string                 `json:"timestamp_opt,omitempty"`
-	MemberRating     uint                   `json:"member_rating,omitempty"`
-	LastChanged      string                 `json:"last_changed,omitempty"`
-	Language         string                 `json:"language,omitempty"`
-	Vip              bool                   `json:"vip,omitempty"`
-	EmailClient      string                 `json:"email_client,omitempty"`
-	Location struct {
-		Lat          float64                `json:"latitude,omitempty"`
-		Lon          float64                `json:"longitude,omitempty"`
-		Gmtoff       int                    `json:"gmtoff,omitempty"`
-		Dstoff       int                    `json:"dstoff,omitempty"`
-		CountryCode  string                 `json:"country_code,omitempty"`
-		Timezone     string                 `json:"timezone,omitempty"`
-	}                                       `json:"location,omitempty"`
+	Id            string                 `json:"id,omitempty"`
+	EmailAddress  string                 `json:"email_address"`
+	UniqueEmailId string                 `json:"unique_email_id,omitempty"`
+	EmailType     EmailType              `json:"email_type,omitempty"`
+	Status        SubscriptionStatus     `json:"status,omitempty"`
+	StatusIfNew   SubscriptionStatus     `json:"status_if_new,omitempty"`
+	MergeFields   map[string]interface{} `json:"merge_fields,omitempty"`
+	Interests     map[string]bool        `json:"interests,omitempty"`
+	Stats         struct {
+		AvgOpenRate  float32 `json:"avg_open_rate,omitempty"`
+		AvgClickRate float32 `json:"avg_click_rate,omitempty"`
+	} `json:"stats,omitempty"`
+	IpSignup        string `json:"ip_signup,omitempty"`
+	TimestampSignup string `json:"timestamp_signup,omitempty"`
+	IpOpt           string `json:"ip_opt,omitempty"`
+	TimestampOpt    string `json:"timestamp_opt,omitempty"`
+	MemberRating    uint   `json:"member_rating,omitempty"`
+	LastChanged     string `json:"last_changed,omitempty"`
+	Language        string `json:"language,omitempty"`
+	Vip             bool   `json:"vip,omitempty"`
+	EmailClient     string `json:"email_client,omitempty"`
+	Location        struct {
+		Lat         float64 `json:"latitude,omitempty"`
+		Lon         float64 `json:"longitude,omitempty"`
+		Gmtoff      int     `json:"gmtoff,omitempty"`
+		Dstoff      int     `json:"dstoff,omitempty"`
+		CountryCode string  `json:"country_code,omitempty"`
+		Timezone    string  `json:"timezone,omitempty"`
+	} `json:"location,omitempty"`
 	LastNote struct {
-		Id           string                 `json:"note_id,omitempty"`
-		CreatedAt    string                 `json:"created_at,omitempty"`
-		CreatedBy    string                 `json:"created_by,omitempty"`
-		Note         string                 `json:"note,omitempty"`
-	}                                       `json:"last_note,omitempty"`
-	ListId           string                 `json:"list_id,omitempty"`
+		Id        string `json:"note_id,omitempty"`
+		CreatedAt string `json:"created_at,omitempty"`
+		CreatedBy string `json:"created_by,omitempty"`
+		Note      string `json:"note,omitempty"`
+	} `json:"last_note,omitempty"`
+	ListId string `json:"list_id,omitempty"`
 }
 
 func (m *Member) SetInterest(key string, val bool) *Member {
@@ -66,14 +67,14 @@ func (m *Member) SetMergeField(key string, val interface{}) *Member {
 }
 
 func NewMember(email string) *Member {
-	return &Member{ Id: EmailToHash(email), EmailAddress: email }
+	return &Member{Id: EmailToHash(email), EmailAddress: email}
 }
 
 func (c *Client) Members(listId string) ([]*Member, error) {
 	// GET /lists/{list_id}/members
 	var results struct {
-			Members []*Member `json:"members"`
-		}
+		Members []*Member `json:"members"`
+	}
 	err := c.Call("GET", fmt.Sprintf("lists/%s/members", listId), nil, &results)
 	if err == nil {
 		return results.Members, nil

@@ -1,11 +1,11 @@
 package mandrill
 
-import(
-	"fmt"
-	"encoding/json"
-	"net/http"
-	"io/ioutil"
+import (
 	"bytes"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
 )
 
 const ENDPOINT string = "https://mandrillapp.com/api/1.0/%s.json"
@@ -15,10 +15,10 @@ type Client struct {
 }
 
 type ErrorResult struct {
-	Status      SendStatus    `json:"status"`
-	Code        int           `json:"code"`
-	Name        string        `json:"name"`
-	Message     string        `json:"message"`
+	Status  SendStatus `json:"status"`
+	Code    int        `json:"code"`
+	Name    string     `json:"name"`
+	Message string     `json:"message"`
 }
 
 func (e *ErrorResult) Error() string {
@@ -68,7 +68,6 @@ func (c *Client) Call(endpoint string, data map[string]interface{}, results inte
 	return json.Unmarshal(body, results)
 }
 
-
 func NewClient(key string) *Client {
-	return &Client{ key }
+	return &Client{key}
 }
