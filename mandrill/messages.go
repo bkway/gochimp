@@ -74,7 +74,7 @@ type Message struct {
 	GoogleAnalyticsCampaign []string       `json:"google_analytics_campaign,omitempty"`
 	Metadata                []RcptMetadata `json:"metadata,omitempty"`
 
-	To []Recipient `json:"to,omitempty"`
+	Recipients []Recipient `json:"to,omitempty"`
 	// built from Recipients
 	MergeVars         []RcptMergeVars `json:"merge_vars,omitempty"`
 	RecipientMetadata []RcptMetadata  `json:"recipient_metadata,omitempty"`
@@ -90,13 +90,37 @@ func NewMessage() *Message {
 
 func (m *Message) AddRecipient(t SendType, r Recipient) *Message {
 	r.Type = t
-	m.To = append(m.To, r)
+	m.Recipients = append(m.Recipients, r)
 
 	if r.MergeVars != nil {
 		m.MergeVars = append(m.MergeVars, RcptMergeVars{Rcpt: r.Email, Vars: r.MergeVars})
 	}
 	if r.Metadata != nil {
 		m.Metadata = append(m.Metadata, RcptMetadata{Rcpt: r.Email, Values: r.Metadata})
+	}
+	return m
+}
+
+func (m *Message) To(email string, name string) *Message {
+	return m.AddRecipient(SendTo, Recipient{Email: email, Name: name})
+}
+
+func (m *Message) CC(email string, name string) *Message {
+	return m.AddRecipient(SendCC, Recipient{Email: email, Name: name})
+}
+
+func (m *Message) BCC(email string, name string) *Message {
+	return m.AddRecipient(SendBCC, Recipient{Email: email, Name: name})
+}
+
+func (m *Message) WithValue(key string, content interface{}) *Message {
+	m.GlobalMergeVars = append(m.GlobalMergeVars, Variable{key, content})
+	return m
+}
+
+func (m *Message) WithValues(vals map[string]interface{}) *Message {
+	for k, v := range vals {
+		m.WithValue(k, v)
 	}
 	return m
 }
@@ -133,31 +157,47 @@ type SendResult struct {
 	Id           string     `json:"id"`
 }
 
-func prepMessageSend(msg *Message, async bool, opts map[string]string) map[string]interface{} {
-	request := map[string]interface{}{"message": msg}
-	if async {
-		request["async"] = true
+type SendOpt func(map[string]interface{})
+
+func SendAt(val string) SendOpt {
+	return func(vals map[string]interface{}) {
+		vals["send_at"] = val
 	}
+}
+
+func IPPool(val string) SendOpt {
+	return func(vals map[string]interface{}) {
+		vals["ip_pool"] = val
+	}
+}
+
+func Async(val bool) SendOpt {
+	return func(vals map[string]interface{}) {
+		vals["async"] = val
+	}
+}
+
+func prepMessageSend(msg *Message, opts ...SendOpt) map[string]interface{} {
+	request := map[string]interface{}{"message": msg}
+
 	if opts != nil {
-		for _, key := range []string{"send_at", "ip_pool", "template_name", "template_content"} {
-			if opt, ok := opts[key]; ok {
-				request[key] = opt
-			}
+		for _, opt := range opts {
+			opt(request)
 		}
 	}
 	return request
 }
 
-func (p *Client) MessagesSend(msg *Message, async bool, opts map[string]string) ([]SendResult, error) {
-	request := prepMessageSend(msg, async, opts)
+func (p *Client) MessagesSend(msg *Message, opts ...SendOpt) ([]SendResult, error) {
+	request := prepMessageSend(msg, opts...)
 
 	var result []SendResult
 	err := p.Call("messages/send", request, &result)
 	return result, err
 }
 
-func (p *Client) MessagesSendTemplate(name string, content []Variable, msg *Message, async bool, opts map[string]string) ([]SendResult, error) {
-	request := prepMessageSend(msg, async, opts)
+func (p *Client) MessagesSendTemplate(name string, content []Variable, msg *Message, opts ...SendOpt) ([]SendResult, error) {
+	request := prepMessageSend(msg, opts...)
 
 	request["template_name"] = name
 	request["template_content"] = content
